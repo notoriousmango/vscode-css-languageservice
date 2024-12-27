@@ -318,6 +318,7 @@ export class Parser {
 			|| this._parseMedia(isNested)
 			|| this._parsePage()
 			|| this._parseFontFace()
+			|| this._parseStartingStyle()
 			|| this._parseKeyframe()
 			|| this._parseSupports(isNested)
 			|| this._parseLayer(isNested)
@@ -770,6 +771,16 @@ export class Parser {
 		return this._parseBody(node, this._parseRuleSetDeclaration.bind(this));
 	}
 
+	public _parseStartingStyle(): nodes.Node | null {
+		if (!this.peekKeyword('@starting-style')) {
+			return null;
+		}
+		const node = this.create(nodes.StartingStyle);
+		this.consumeToken(); // @starting-style
+
+		return this._parseBody(node, this._parseRuleSetDeclaration.bind(this));
+	}
+
 	public _parseViewPort(): nodes.Node | null {
 		if (!this.peekKeyword('@-ms-viewport') &&
 			!this.peekKeyword('@-o-viewport') &&
@@ -952,7 +963,7 @@ export class Parser {
 	public _parseLayerName(): nodes.Node | null {
 		// <layer-name> = <ident> [ '.' <ident> ]*
 		const node = this.createNode(nodes.NodeType.LayerName);
-		if (!node.addChild(this._parseIdent()) ) {
+		if (!node.addChild(this._parseIdent())) {
 			return null;
 		}
 		while (!this.hasWhitespace() && this.acceptDelim('.')) {

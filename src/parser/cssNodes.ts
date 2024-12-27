@@ -967,6 +967,18 @@ export class FontFace extends BodyDeclaration {
 
 }
 
+export class StartingStyle extends BodyDeclaration {
+	constructor(offset: number, length: number) {
+		super(offset, length);
+	}
+
+	public get type(): NodeType {
+		return NodeType.FontFace;
+	}
+
+}
+
+
 export class NestedProperties extends BodyDeclaration {
 	constructor(offset: number, length: number) {
 		super(offset, length);

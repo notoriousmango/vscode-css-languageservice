@@ -60,6 +60,7 @@ suite('CSS - Parser', () => {
 		assertNode('@-moz-keyframes darkWordHighlight { from { background-color: inherit; } to { background-color: rgba(83, 83, 83, 0.7); } }', parser, parser._parseStylesheet.bind(parser));
 		assertNode('@page { margin: 2.5cm; }', parser, parser._parseStylesheet.bind(parser));
 		assertNode('@font-face { font-family: "Example Font"; }', parser, parser._parseStylesheet.bind(parser));
+		assertNode('@starting-style {  opacity: 0; }', parser, parser._parseStylesheet.bind(parser));
 		assertNode('@namespace "http://www.w3.org/1999/xhtml";', parser, parser._parseStylesheet.bind(parser));
 		assertNode('@namespace pref url(http://test);', parser, parser._parseStylesheet.bind(parser));
 		assertNode('@-moz-document url(http://test), url-prefix(http://www.w3.org/Style/) { body { color: purple; background: yellow; } }', parser, parser._parseStylesheet.bind(parser));
@@ -120,6 +121,15 @@ suite('CSS - Parser', () => {
 		assertNode('@font-face { unicode-range: U+0021-007F }', parser, parser._parseFontFace.bind(parser));
 		assertError('@font-face { font-style: normal font-stretch: normal; }', parser, parser._parseFontFace.bind(parser), ParseError.SemiColonExpected);
 	});
+
+	test('@starting-style', function () {
+		const parser = new Parser();
+		assertNode('@starting-style {}', parser, parser._parseStartingStyle.bind(parser));
+		assertNode('@starting-style { opacity: 0; }', parser, parser._parseStartingStyle.bind(parser));
+		assertNode('@starting-style { opacity: 0; }', parser, parser._parseStartingStyle.bind(parser));
+		assertError('@starting-style { opacity: 0; ', parser, parser._parseStartingStyle.bind(parser), ParseError.RightCurlyExpected);
+	});
+
 
 	test('@keyframe selector', function () {
 		const parser = new Parser();
